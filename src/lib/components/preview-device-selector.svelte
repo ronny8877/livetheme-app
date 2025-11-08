@@ -81,7 +81,7 @@
 					data-tippy-content={isCustomDevice(d)
 						? getCustomDeviceName(d)
 						: d.charAt(0).toUpperCase() + d.slice(1)}
-					use:tippy={{ placement: 'right', animation: 'shift-away', duration: 200  }}
+					use:tippy={{ placement: 'right', animation: 'shift-away', duration: 200 }}
 					title={d}
 					aria-pressed={isActive(d)}
 					class={`btn flex h-10 w-10 items-center justify-center rounded-3xl p-0 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] btn-sm ${isActive(d) ? 'scale-105 shadow-lg btn-primary' : 'btn-ghost hover:scale-110 hover:btn-outline'}`}

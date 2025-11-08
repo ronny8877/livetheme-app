@@ -2,7 +2,7 @@
 	let { title = 'Live Preview' } = $props<{ title?: string }>();
 </script>
 
-<div class="font-body flex h-full w-full items-center justify-center">
+<div class="flex h-full w-full items-center justify-center font-body">
 	<div
 		class="rounded-3xl border border-dashed border-base-300 p-8 text-center text-sm text-base-content/70"
 	>

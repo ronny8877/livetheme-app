@@ -1,8 +1,8 @@
 <script lang="ts">
 	import '../app.css';
 	import 'tippy.js/dist/tippy.css';
-import 'tippy.js/dist/backdrop.css';
-import 'tippy.js/animations/shift-away.css';
+	import 'tippy.js/dist/backdrop.css';
+	import 'tippy.js/animations/shift-away.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { browser } from '$app/environment';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';

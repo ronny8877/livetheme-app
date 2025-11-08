@@ -13,19 +13,11 @@
 		Sparkles,
 		Compass
 	} from '@lucide/svelte';
-	import {
-		editor_tools,
-		fonts_modal,
-		active_theme,
-		settings_ui,
-		explore_modal,
-		randomizeFontsIfEnabled,
-		preferences
-	} from '$lib/store/app.svelte';
-	import { templates_ui } from '$lib/store/templates.svelte';
-	import { randomizeActiveTheme } from '$lib/store/app.svelte';
-	import umami from '$lib/utils/op';
+	import { app_modals, MODAL_TYPE } from '$lib/store/app.svelte';
 	import tippy from 'tippy.js';
+	import { randomizeActiveTheme } from '$lib';
+	import { active_theme } from '$lib/store/theme.svelte';
+	import { randomizeFontsIfEnabled } from '$lib/utils';
 	// Defer import of theme-random to reduce initial bundle size
 	let generateRandomThemeFn: null | ((...args: any[]) => any) = null;
 	async function ensureThemeRandom() {
@@ -45,62 +37,6 @@
 	let hideTimeout: ReturnType<typeof setTimeout> | null = null;
 	let dockElement: HTMLDivElement | null = $state(null);
 
-	function handleMouseEnter() {
-		if (!preferences.auto_hide_dock) return;
-
-		if (hideTimeout) {
-			clearTimeout(hideTimeout);
-			hideTimeout = null;
-		}
-		dockVisible = true;
-	}
-
-	function handleMouseLeave() {
-		if (!preferences.auto_hide_dock) return;
-
-		if (hideTimeout) clearTimeout(hideTimeout);
-
-		// Hide after 2 second delay
-		hideTimeout = setTimeout(() => {
-			dockVisible = false;
-		}, 2000);
-	}
-
-	// Show dock when mouse enters bottom area
-	function handleDocumentMouseMove(e: MouseEvent) {
-		if (!preferences.auto_hide_dock) return;
-
-		const bottomThreshold = window.innerHeight - 100; // 100px from bottom
-
-		if (e.clientY > bottomThreshold && !dockVisible) {
-			dockVisible = true;
-		}
-	}
-
-	// Initialize auto-hide on mount if enabled
-	$effect(() => {
-		if (typeof window === 'undefined') return;
-
-		if (preferences.auto_hide_dock) {
-			window.addEventListener('mousemove', handleDocumentMouseMove);
-
-			// Start hidden after initial delay
-			const initialHideTimeout = setTimeout(() => {
-				if (!dockElement?.matches(':hover')) {
-					dockVisible = false;
-				}
-			}, 3000);
-
-			return () => {
-				window.removeEventListener('mousemove', handleDocumentMouseMove);
-				clearTimeout(initialHideTimeout);
-			};
-		} else {
-			// Always show when auto-hide is disabled
-			dockVisible = true;
-		}
-	});
-
 	// Map names to icon components (constructors)
 	const icons = {
 		Typography: Text,
@@ -118,7 +54,6 @@
 	// Primary dock items (visible on mobile)
 	const primaryItems: DockName[] = ['Explore', 'Typography', 'Fonts', 'Gradients', 'Settings'];
 
-
 	function select(name: DockName) {
 		if (name === 'Random') {
 			// Special case: generate new theme immediately, do not toggle active tool
@@ -128,28 +63,21 @@
 			return;
 		}
 		if (name === 'Templates') {
-			templates_ui.is_open = true;
+			app_modals.active_modal = MODAL_TYPE.TEMPLATES;
 			return;
 		}
 		if (name === 'Fonts') {
-			fonts_modal.is_open = true;
-			fonts_modal.active_tab = 'discovery';
+			app_modals.active_modal = MODAL_TYPE.FONTS;
 			return;
 		}
 		if (name === 'Explore') {
-			explore_modal.is_open = true;
+			app_modals.active_modal = MODAL_TYPE.EXPLORE;
 			return;
 		}
 		if (name === 'Settings') {
-			settings_ui.is_open = true;
+			app_modals.active_modal = MODAL_TYPE.SETTINGS;
 			return;
 		}
-		if (editor_tools.active_tool === name) {
-			// Deselect if already active
-			editor_tools.active_tool = 'none';
-			return;
-		}
-		editor_tools.active_tool = name as any;
 	}
 
 	async function generateRandomThemeByType(type: 'light' | 'dark' | 'random') {
@@ -204,17 +132,22 @@
 
 {#snippet dockItem(name: DockName, action: () => void)}
 	{@const Icon = icons[name]}
+	{@const isActive =
+		(name === 'Templates' && app_modals.active_modal === MODAL_TYPE.TEMPLATES) ||
+		(name === 'Fonts' && app_modals.active_modal === MODAL_TYPE.FONTS) ||
+		(name === 'Explore' && app_modals.active_modal === MODAL_TYPE.EXPLORE) ||
+		(name === 'Settings' && app_modals.active_modal === MODAL_TYPE.SETTINGS)}
 	<button
 		data-umami-event="dock-{name.toLowerCase()}-click"
-		data-umami-event-status={editor_tools.active_tool === name ? 'active' : 'inactive'}
+		data-umami-event-status={isActive ? 'active' : 'inactive'}
 		class={[
 			'dock-action flex cursor-pointer items-center gap-2 rounded-full p-3',
-			editor_tools.active_tool === name
+			isActive
 				? 'bg-primary text-primary-content'
 				: 'bg-base-100 text-base-content/70 hover:bg-base-200 hover:text-base-content'
 		]}
 		onclick={action}
-		aria-pressed={editor_tools.active_tool === name}
+		aria-pressed={isActive}
 		data-tippy-content={name === 'Random' ? 'Random Theme' : name}
 		use:tippy={{ placement: 'top', animation: 'shift-away', duration: 200 }}
 	>
@@ -224,8 +157,6 @@
 
 <div
 	bind:this={dockElement}
-	onmouseenter={handleMouseEnter}
-	onmouseleave={handleMouseLeave}
 	role="toolbar"
 	aria-label="Editor dock"
 	tabindex="-1"

@@ -65,7 +65,6 @@
 			{props.template.description}
 		</p>
 
-
 		<!-- Font Info -->
 		{#if props.template.fonts?.heading || props.template.fonts?.body}
 			<div class="flex items-center gap-2 text-xs text-base-content/60">

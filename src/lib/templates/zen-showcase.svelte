@@ -274,7 +274,7 @@
 
 <!-- Minimal Zen Showcase using DaisyUI -->
 <section
-	class="font-body relative flex min-h-screen w-full items-center justify-center bg-linear-to-b from-base-200 to-base-300/60"
+	class="relative flex min-h-screen w-full items-center justify-center bg-linear-to-b from-base-200 to-base-300/60 font-body"
 >
 	<!-- Brand badge -->
 	<div class="pointer-events-none absolute top-4 left-4 z-20">

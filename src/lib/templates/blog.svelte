@@ -50,7 +50,7 @@
 </script>
 
 <!-- Root now uses body font via CSS var (set by preview engine) -->
-<div class="font-body body-metrics min-h-screen bg-base-100">
+<div class="body-metrics min-h-screen bg-base-100 font-body">
 	<header
 		class="top-0 z-40 mx-auto mt-5 flex max-w-6xl items-center justify-between rounded-selector border-b border-base-200 bg-primary px-4 py-4 text-primary-content sm:px-6"
 	>

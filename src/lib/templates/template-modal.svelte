@@ -4,7 +4,10 @@
 	import TemplateCard from './template-card.svelte';
 
 	// Props
-	let { isOpen = $bindable(false), onSelectTemplate }: { isOpen?: boolean; onSelectTemplate: (templateId: string) => void } = $props();
+	let {
+		isOpen = $bindable(false),
+		onSelectTemplate
+	}: { isOpen?: boolean; onSelectTemplate: (templateId: string) => void } = $props();
 
 	let dialogEl: HTMLDialogElement | null = $state(null);
 	let searchQuery = $state('');
@@ -89,7 +92,6 @@
 						<h2 class="font-body text-2xl font-bold tracking-tight text-base-content">
 							Select Template
 						</h2>
-	
 					</div>
 					<button class="btn btn-circle btn-ghost btn-sm" aria-label="Close" onclick={close}>
 						<X class="h-5 w-5" />
@@ -105,7 +107,7 @@
 					/>
 					<input
 						type="text"
-						class="input input-lg input-accent w-full pl-10 rounded-3xl focus:outline-0"
+						class="input input-lg w-full rounded-3xl pl-10 input-accent focus:outline-0"
 						placeholder="Search templates, categories, or fonts..."
 						bind:value={searchQuery}
 					/>
@@ -121,18 +123,18 @@
 			<div class="flex h-[calc(80vh-9rem)]">
 				<!-- Categories Sidebar (desktop) - Hide when searching globally or on small screens -->
 				{#if !isGlobalSearch}
-					<div class="hidden w-64 border-r border-base-300 p-4 md:block ">
+					<div class="hidden w-64 border-r border-base-300 p-4 md:block">
 						<h4 class="mb-4 font-semibold text-base-content">Categories</h4>
-						<div class="space-y-2 overflow-y-auto h-[calc(80vh-9rem)] pb-5 hide-scrollbar">
+						<div class="hide-scrollbar h-[calc(80vh-9rem)] space-y-2 overflow-y-auto pb-5">
 							{#each categories as category, index (category)}
 								<button
-									class="w-full rounded-2xl p-3 text-left transition-all  cursor-pointer {selectedCategoryIndex ===
+									class="w-full cursor-pointer rounded-2xl p-3 text-left transition-all {selectedCategoryIndex ===
 									index
 										? 'bg-primary text-primary-content'
 										: 'text-base-content hover:bg-base-200'}"
 									onclick={() => (selectedCategoryIndex = index)}
 								>
-									<div class="font-semibold font-body">{category}</div>
+									<div class="font-body font-semibold">{category}</div>
 									<div
 										class="mt-1 text-xs {selectedCategoryIndex === index
 											? 'text-primary-content/80'
@@ -161,7 +163,8 @@
 							{#each categories as category, idx (category)}
 								<button
 									onclick={() => (selectedCategoryIndex = idx)}
-									class="rounded-full px-3 py-1 text-sm transition-all {selectedCategoryIndex === idx
+									class="rounded-full px-3 py-1 text-sm transition-all {selectedCategoryIndex ===
+									idx
 										? 'bg-primary text-primary-content'
 										: 'bg-base-200 text-base-content/80'}"
 								>

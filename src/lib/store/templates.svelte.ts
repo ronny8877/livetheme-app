@@ -58,7 +58,6 @@ export interface TemplateDefinition {
 	fonts?: { heading?: string; body?: string };
 	tags?: string[]; // keywords to help filtering
 	framework?: FrameworkId;
-
 }
 
 export const templates_catalog = $state<TemplateDefinition[]>([
@@ -93,7 +92,7 @@ export const templates_catalog = $state<TemplateDefinition[]>([
 		category: 'Showcase',
 		component: null,
 		theme_id: 'caramellatte',
-        	framework: 'daisyui',
+		framework: 'daisyui',
 		fonts: { heading: 'bitcount', body: 'nunito' },
 		tags: ['minimal', 'palette', 'clock', 'theme', 'showcase', 'animation']
 	},
@@ -111,7 +110,8 @@ export const templates_catalog = $state<TemplateDefinition[]>([
 	{
 		id: 'shadcn-mock',
 		title: 'Shadcn Mock',
-		description: 'Comprehensive showcase of Shadcn UI components including buttons, cards, dialogs, and form elements',
+		description:
+			'Comprehensive showcase of Shadcn UI components including buttons, cards, dialogs, and form elements',
 		category: 'Showcase',
 		component: null,
 		theme_id: 'retro',
@@ -137,7 +137,7 @@ export const templates_catalog = $state<TemplateDefinition[]>([
 		category: 'Blog',
 		component: null,
 		theme_id: 'forest',
-        framework: 'daisyui',
+		framework: 'daisyui',
 		fonts: { heading: 'poppins', body: 'inter' },
 		tags: ['blog', 'articles', 'newsletter', 'content', 'reading']
 	},
@@ -149,7 +149,7 @@ export const templates_catalog = $state<TemplateDefinition[]>([
 		category: 'Blog',
 		component: null,
 		theme_id: 'emerald',
-        framework: 'daisyui',
+		framework: 'daisyui',
 		fonts: { heading: 'montserrat', body: 'lato' },
 		tags: ['blog', 'landing', 'marketing', 'newsletter', 'testimonials']
 	},
@@ -161,7 +161,7 @@ export const templates_catalog = $state<TemplateDefinition[]>([
 		category: 'Blog',
 		component: null,
 		theme_id: 'business',
-        framework: 'daisyui',
+		framework: 'daisyui',
 		fonts: { heading: 'inter', body: 'inter' },
 		tags: ['blog', 'tech', 'articles', 'search', 'navigation', 'content']
 	},
@@ -172,7 +172,7 @@ export const templates_catalog = $state<TemplateDefinition[]>([
 		category: 'Gallery',
 		component: null,
 		theme_id: 'coffee',
-        framework: 'daisyui',
+		framework: 'daisyui',
 		fonts: { heading: 'bitcount', body: 'nunito' },
 		tags: ['gallery', 'anime', 'images', 'masonry', 'api', 'art']
 	},
@@ -184,7 +184,7 @@ export const templates_catalog = $state<TemplateDefinition[]>([
 		category: 'Content',
 		component: null,
 		theme_id: 'emerald',
-        framework: 'daisyui',
+		framework: 'daisyui',
 		fonts: { heading: 'poppins', body: 'inter' },
 		tags: ['recipe', 'cooking', 'food', 'instructions', 'reviews', 'ratings']
 	},
@@ -195,14 +195,14 @@ export const templates_catalog = $state<TemplateDefinition[]>([
 			'Clean and modern authentication interface with login, signup, and password recovery flows',
 		category: 'App',
 		component: null,
-        framework: 'daisyui',
+		framework: 'daisyui',
 		theme_id: 'coffee',
 		fonts: { heading: 'ubuntu', body: 'nunito' },
 		tags: ['auth', 'login', 'signup', 'authentication', 'forms', 'security']
 	},
 	{
 		id: 'dashboard',
-        framework: 'daisyui',
+		framework: 'daisyui',
 		title: 'Dashboard',
 		description:
 			'Professional project management dashboard with live charts, analytics, team collaboration, and time tracking',
@@ -215,7 +215,7 @@ export const templates_catalog = $state<TemplateDefinition[]>([
 	{
 		id: 'shadcn-dashboard',
 		title: 'Dashboard (Shadcn)',
-        
+
 		description: 'Shadcn-styled dashboard layout with sidebar, header, charts and data table',
 		category: 'App',
 		component: null,
@@ -227,7 +227,7 @@ export const templates_catalog = $state<TemplateDefinition[]>([
 	{
 		id: 'email-inbox',
 		title: 'Email Inbox',
-        framework: 'daisyui',
+		framework: 'daisyui',
 		description:
 			'Feature-rich email client with collapsible sidebar, search, compose modal, and beautiful empty state',
 		category: 'App',
@@ -239,7 +239,7 @@ export const templates_catalog = $state<TemplateDefinition[]>([
 	{
 		id: 'email-empty-state',
 		title: 'Email Empty State',
-        framework: 'daisyui',
+		framework: 'daisyui',
 		description:
 			'Zen-like empty inbox state with live clock, time format toggle, and inspirational quotes that rotate every 30 seconds',
 		category: 'Components',
@@ -251,7 +251,7 @@ export const templates_catalog = $state<TemplateDefinition[]>([
 	{
 		id: 'youtube',
 		title: 'YouTube Clone',
-        framework: 'daisyui',
+		framework: 'daisyui',
 		description:
 			'Full-featured YouTube clone with smooth transitions, video grid, player view, related videos sidebar, and watch history',
 		category: 'App',
@@ -263,7 +263,7 @@ export const templates_catalog = $state<TemplateDefinition[]>([
 	{
 		id: 'devv-social',
 		title: 'Devv Social',
-        framework: 'daisyui',
+		framework: 'daisyui',
 		description:
 			'Twitter-like social media UI with posts, image carousel, animations, trending topics, and interactive features',
 		category: 'App',
@@ -275,7 +275,7 @@ export const templates_catalog = $state<TemplateDefinition[]>([
 	{
 		id: 'placeholder',
 		title: 'Placeholder Template',
-        framework: 'daisyui',
+		framework: 'daisyui',
 		description:
 			'Simple placeholder template for testing and prototyping new layouts and components',
 		category: 'Utility',

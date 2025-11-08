@@ -14,7 +14,7 @@
 </script>
 
 <!-- Blog Landing Page Template -->
-<div class="font-body body-metrics min-h-screen bg-base-100">
+<div class="body-metrics min-h-screen bg-base-100 font-body">
 	<!-- Navigation -->
 	<nav
 		class=" fixed top-3 right-0 left-0 z-50 mx-auto w-full max-w-7xl rounded-full border-b border-base-300 bg-base-100/60 px-4 backdrop-blur-lg sm:px-6 lg:px-8"

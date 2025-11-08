@@ -78,7 +78,7 @@
 	let amPm = $derived(!is24Hour ? (time.getHours() >= 12 ? 'PM' : 'AM') : '');
 </script>
 
-<div class="font-body hero h-full">
+<div class="hero h-full font-body">
 	<div class="hero-content text-center">
 		<div class="max-w-md lg:max-w-lg">
 			<div class="mb-4 lg:mb-6">

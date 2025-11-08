@@ -341,7 +341,7 @@
 	}
 </script>
 
-<div class="font-body flex h-screen flex-col overflow-hidden bg-base-100">
+<div class="flex h-screen flex-col overflow-hidden bg-base-100 font-body">
 	<!-- Header -->
 	<header class="flex h-14 items-center gap-4 border-b border-base-300 bg-base-100 px-4 shadow-sm">
 		<button

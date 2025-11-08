@@ -231,7 +231,7 @@
 
 <svelte:window onkeydown={handleKeydown} />
 
-<div class="font-body relative flex h-screen overflow-hidden bg-base-100">
+<div class="relative flex h-screen overflow-hidden bg-base-100 font-body">
 	<!-- Mobile Menu Button -->
 	<button
 		class="btn fixed top-4 left-4 z-50 btn-circle bg-base-100 shadow-lg btn-ghost btn-sm lg:hidden"

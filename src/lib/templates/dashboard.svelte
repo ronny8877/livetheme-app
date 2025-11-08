@@ -1,40 +1,40 @@
 <script lang="ts">
 	/**
 	 * LiveTheme Analytics Dashboard
-	 * 
+	 *
 	 * This dashboard displays comprehensive analytics for the LiveTheme platform:
-	 * 
+	 *
 	 * KEY METRICS:
 	 * - Total Themes Generated: All-time theme creation count
 	 * - Dark Themes: Number of dark mode themes created
 	 * - Total Visits: Overall site traffic
 	 * - Visits Today: Current day's traffic
 	 * - Realtime Visitors: Live visitor count
-	 * 
+	 *
 	 * CHARTS:
 	 * - Daily Theme Generation: Bar chart showing weekly theme creation
 	 * - Theme Distribution: Donut chart for light vs dark theme ratio
 	 * - Hourly Visits: Line chart tracking today's traffic by hour
 	 * - Monthly Growth: Long-term trend analysis
-	 * 
+	 *
 	 * TEMPLATE ANALYTICS:
 	 * - Top 5 Most Used Templates with usage percentages
 	 * - Real-time activity feed showing recent user actions
-	 * 
+	 *
 	 * INTEGRATION POINTS:
 	 * TODO: Connect to Umami Analytics API
 	 * - Replace mock data with real Umami API calls in onMount()
 	 * - Set up realtime WebSocket connection for live visitor count
 	 * - Implement data refresh intervals (recommended: 60 seconds)
 	 * - Add error handling for API failures
-	 * 
+	 *
 	 * UMAMI API ENDPOINTS TO USE:
 	 * - /api/websites/:id/stats - Get overall statistics
 	 * - /api/websites/:id/pageviews - Get pageview data
 	 * - /api/websites/:id/metrics - Get detailed metrics
 	 * - /api/websites/:id/active - Get realtime active users
 	 */
-	
+
 	import {
 		Palette,
 		Moon,
@@ -84,8 +84,8 @@
 
 	// Hourly visits data for today (24 hours)
 	let hourlyVisits = $state([
-		45, 23, 12, 8, 15, 34, 67, 89, 123, 145, 167, 189, 201, 195, 178, 156, 134, 112, 98, 87, 76,
-		65, 54, 48
+		45, 23, 12, 8, 15, 34, 67, 89, 123, 145, 167, 189, 201, 195, 178, 156, 134, 112, 98, 87, 76, 65,
+		54, 48
 	]);
 
 	// Daily theme generation for the last 7 days
@@ -214,11 +214,11 @@
 		<div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
 			<!-- Total Themes -->
 			<div class="border border-base-300 bg-base-100 p-5">
-				<div class="mb-1 text-xs font-medium uppercase tracking-wide text-base-content/60">
+				<div class="mb-1 text-xs font-medium tracking-wide text-base-content/60 uppercase">
 					Total Themes
 				</div>
 				<div class="flex items-baseline gap-2">
-					<div class="text-3xl font-bold tabular-nums text-base-content">
+					<div class="text-3xl font-bold text-base-content tabular-nums">
 						{formatNumber(stats.totalThemes)}
 					</div>
 					<div
@@ -233,11 +233,11 @@
 
 			<!-- Dark Themes -->
 			<div class="border border-base-300 bg-base-100 p-5">
-				<div class="mb-1 text-xs font-medium uppercase tracking-wide text-base-content/60">
+				<div class="mb-1 text-xs font-medium tracking-wide text-base-content/60 uppercase">
 					Dark Themes
 				</div>
 				<div class="flex items-baseline gap-2">
-					<div class="text-3xl font-bold tabular-nums text-base-content">
+					<div class="text-3xl font-bold text-base-content tabular-nums">
 						{formatNumber(stats.darkThemes)}
 					</div>
 					<div class="text-sm font-medium text-base-content/50">
@@ -248,11 +248,11 @@
 
 			<!-- Total Visits -->
 			<div class="border border-base-300 bg-base-100 p-5">
-				<div class="mb-1 text-xs font-medium uppercase tracking-wide text-base-content/60">
+				<div class="mb-1 text-xs font-medium tracking-wide text-base-content/60 uppercase">
 					Total Visits
 				</div>
 				<div class="flex items-baseline gap-2">
-					<div class="text-3xl font-bold tabular-nums text-base-content">
+					<div class="text-3xl font-bold text-base-content tabular-nums">
 						{formatNumber(stats.totalVisits)}
 					</div>
 					<div
@@ -267,11 +267,11 @@
 
 			<!-- Visits Today -->
 			<div class="border border-base-300 bg-base-100 p-5">
-				<div class="mb-1 text-xs font-medium uppercase tracking-wide text-base-content/60">
+				<div class="mb-1 text-xs font-medium tracking-wide text-base-content/60 uppercase">
 					Visits Today
 				</div>
 				<div class="flex items-baseline gap-2">
-					<div class="text-3xl font-bold tabular-nums text-base-content">
+					<div class="text-3xl font-bold text-base-content tabular-nums">
 						{formatNumber(stats.visitsToday)}
 					</div>
 					<div
@@ -329,7 +329,7 @@
 									</div>
 								</div>
 								<div class="ml-6 text-right">
-									<div class="text-sm font-semibold tabular-nums text-base-content">
+									<div class="text-sm font-semibold text-base-content tabular-nums">
 										{formatNumber(template.uses)}
 									</div>
 									<div class="text-xs text-base-content/60">{template.percentage.toFixed(1)}%</div>
@@ -357,7 +357,7 @@
 									<div class="text-sm font-medium text-base-content">{activity.action}</div>
 									<div class="mt-1 text-xs text-base-content/60">{activity.template}</div>
 								</div>
-								<div class="text-xs tabular-nums text-base-content/50">{activity.time}</div>
+								<div class="text-xs text-base-content/50 tabular-nums">{activity.time}</div>
 							</div>
 						</div>
 					{/each}

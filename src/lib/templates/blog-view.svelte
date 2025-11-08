@@ -3,7 +3,7 @@
 	const props = $props<{ title?: string }>();
 </script>
 
-<div class="font-body min-h-screen space-y-10 bg-base-100 p-10 text-base-content">
+<div class="min-h-screen space-y-10 bg-base-100 p-10 font-body text-base-content">
 	<header class="flex items-center justify-between">
 		<h1 class="heading-metrics font-heading text-3xl font-bold">
 			{props.title || 'Blog View Template'}

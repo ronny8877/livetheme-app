@@ -13,7 +13,7 @@
 	let isLogin = $derived(currentView === 'login');
 </script>
 
-<div class="font-body flex min-h-screen items-center justify-center p-4">
+<div class="flex min-h-screen items-center justify-center p-4 font-body">
 	<div
 		class="w-full max-w-[1000px] overflow-hidden rounded-4xl border border-base-300 bg-base-100 shadow-2xl"
 	>

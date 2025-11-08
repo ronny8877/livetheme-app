@@ -212,7 +212,7 @@
 	});
 </script>
 
-<div class="font-body min-h-screen bg-gradient-to-br from-base-100 to-base-200">
+<div class="min-h-screen bg-gradient-to-br from-base-100 to-base-200 font-body">
 	<!-- Header with API Credit & Search -->
 	<header
 		class=" z-40 mx-auto max-w-6xl rounded-b-3xl border-b border-base-300 bg-base-100/80 shadow-sm backdrop-blur-lg"

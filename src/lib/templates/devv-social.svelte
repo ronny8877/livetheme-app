@@ -331,7 +331,7 @@
 	}
 </script>
 
-<div class="font-body min-h-screen bg-base-100 text-base-content">
+<div class="min-h-screen bg-base-100 font-body text-base-content">
 	<!-- Main Container -->
 	<div class="mx-auto flex max-w-7xl">
 		<!-- Left Sidebar -->
