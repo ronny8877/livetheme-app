@@ -32,11 +32,6 @@
 	let feelingLuckyActive = $state(false);
 	let feelingLuckyTimeout: ReturnType<typeof setTimeout> | null = null;
 
-	// Auto-hide dock functionality
-	let dockVisible = $state(true);
-	let hideTimeout: ReturnType<typeof setTimeout> | null = null;
-	let dockElement: HTMLDivElement | null = $state(null);
-
 	// Map names to icon components (constructors)
 	const icons = {
 		Typography: Text,
@@ -68,6 +63,14 @@
 		}
 		if (name === 'Fonts') {
 			app_modals.active_modal = MODAL_TYPE.FONTS;
+			return;
+		}
+		if (name === 'Typography') {
+			app_modals.active_modal = MODAL_TYPE.TYPOGRAPHY;
+			return;
+		}
+		if (name === 'Gradients') {
+			app_modals.active_modal = MODAL_TYPE.GRADIENT;
 			return;
 		}
 		if (name === 'Explore') {
@@ -135,6 +138,8 @@
 	{@const isActive =
 		(name === 'Templates' && app_modals.active_modal === MODAL_TYPE.TEMPLATES) ||
 		(name === 'Fonts' && app_modals.active_modal === MODAL_TYPE.FONTS) ||
+		(name === 'Typography' && app_modals.active_modal === MODAL_TYPE.TYPOGRAPHY) ||
+		(name === 'Gradients' && app_modals.active_modal === MODAL_TYPE.GRADIENT) ||
 		(name === 'Explore' && app_modals.active_modal === MODAL_TYPE.EXPLORE) ||
 		(name === 'Settings' && app_modals.active_modal === MODAL_TYPE.SETTINGS)}
 	<button
@@ -156,13 +161,10 @@
 {/snippet}
 
 <div
-	bind:this={dockElement}
 	role="toolbar"
 	aria-label="Editor dock"
 	tabindex="-1"
-	class="w-ull fixed bottom-5 left-1/2 flex -translate-x-1/2 justify-center gap-2 rounded-full glass p-2 outline outline-base-content/20 transition-all duration-300 ease-out md:max-w-lg {dockVisible
-		? 'translate-y-0 opacity-100'
-		: 'pointer-events-none translate-y-20 opacity-0'}"
+	class="w-full fixed bottom-5 left-1/2 flex -translate-x-1/2 justify-center gap-2 rounded-full glass p-2 outline outline-base-content/20 transition-all duration-300 ease-out md:max-w-lg"
 >
 	<!-- Primary items - always visible -->
 	{#each primaryItems as item}

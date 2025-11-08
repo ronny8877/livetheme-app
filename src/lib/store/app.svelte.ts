@@ -1,5 +1,6 @@
 export enum MODAL_TYPE {
 	FONTS = 'fonts',
+	TYPOGRAPHY = 'typography',
 	TEMPLATES = 'templates',
 	GRADIENT = 'gradient',
 	EXPLORE = 'explore',

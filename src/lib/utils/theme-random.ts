@@ -1,6 +1,17 @@
 import { wcagContrast, random as culoriRandom, formatCss } from 'culori';
 import { THEME_ADJECTIVES, THEME_NOUNS } from './constants';
-import type { DaisyTheme } from '$lib/store/theme.svelte';
+
+// -------------------------------
+// Types
+// -------------------------------
+export interface DaisyTheme {
+	name: string;
+	id: string;
+	default: boolean; // allow boolean instead of literal false for compatibility with static theme objects
+	colors: Record<string, string>;
+	radius: Record<string, string>;
+	misc: Record<string, string | number>;
+}
 
 function contentKey(key: string) {
 	if (key.endsWith('-content')) return key; // already
