@@ -1,3 +1,5 @@
+import THEMES from '$lib/utils/constants';
+
 export type Typography = {
 	font: string;
 	/**
@@ -19,14 +21,16 @@ export interface DaisyTheme {
 }
 
 export const active_theme = $state<{ theme: DaisyTheme | null; is_modified: boolean }>({
-	theme: null,
+	theme: THEMES[0],
 	is_modified: false
 });
 
 export const typography = $state<{
+	is_modified: boolean;
 	heading: Typography;
 	body: Typography;
 }>({
+	is_modified: false,
 	heading: {
 		font: 'roboto',
 		weights: [400],

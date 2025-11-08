@@ -47,13 +47,16 @@ export async function loadTemplateComponent(t: TemplateDefinition): Promise<unkn
 
 export type FrameworkId = 'shadcn' | 'daisyui' | 'tailwind';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type SvelteComponentConstructor = any;
+
 export interface TemplateDefinition {
 	id: string;
 	title: string;
 	description: string;
 	category: string; // e.g. 'Blog', 'App'
-	// Using unknown for lazy component placeholder; assigned to a Svelte component constructor at runtime
-	component: unknown; // Svelte component constructor (lazy loaded later)
+	// Svelte component constructor (lazy loaded later)
+	component: SvelteComponentConstructor | null;
 	theme_id?: string; // optional theme to auto load
 	fonts?: { heading?: string; body?: string };
 	tags?: string[]; // keywords to help filtering
@@ -285,3 +288,20 @@ export const templates_catalog = $state<TemplateDefinition[]>([
 		tags: ['placeholder', 'prototype', 'testing', 'template']
 	}
 ]);
+
+export const active_template = $state<{ template: TemplateDefinition | null }>({
+	template: null
+});
+
+// Initialize the default template on the client side
+if (typeof window !== 'undefined') {
+	(async () => {
+		const defaultTemplate = templates_catalog[1]; // sass-landing
+		try {
+			const component = await loadTemplateComponent(defaultTemplate);
+			active_template.template = { ...defaultTemplate, component };
+		} catch (error) {
+			console.error('Failed to load default template:', error);
+		}
+	})();
+}

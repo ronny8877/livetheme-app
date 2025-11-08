@@ -164,7 +164,7 @@
 	role="toolbar"
 	aria-label="Editor dock"
 	tabindex="-1"
-	class="w-full fixed bottom-5 left-1/2 flex -translate-x-1/2 justify-center gap-2 rounded-full glass p-2 outline outline-base-content/20 transition-all duration-300 ease-out md:max-w-lg"
+	class="w-auto fixed bottom-5 left-1/2 flex -translate-x-1/2 justify-center gap-2 rounded-full glass p-2 outline outline-base-content/20 transition-all duration-300 ease-out md:max-w-lg"
 >
 	<!-- Primary items - always visible -->
 	{#each primaryItems as item}

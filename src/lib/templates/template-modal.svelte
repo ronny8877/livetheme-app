@@ -2,16 +2,13 @@
 	import { X, Search } from '@lucide/svelte';
 	import { templates_catalog, type TemplateDefinition } from '$lib/store/templates.svelte';
 	import TemplateCard from './template-card.svelte';
+	import { app_modals } from '$lib/store/app.svelte';
 
-	// Props
-	let {
-		isOpen = $bindable(false),
-		onSelectTemplate
-	}: { isOpen?: boolean; onSelectTemplate: (templateId: string) => void } = $props();
-
+	
 	let dialogEl: HTMLDialogElement | null = $state(null);
 	let searchQuery = $state('');
 	let selectedCategoryIndex = $state(0);
+	let isOpen = $derived(app_modals.active_modal === 'templates');
 
 	$effect(() => {
 		if (isOpen) {
@@ -23,7 +20,7 @@
 	});
 
 	function close() {
-		isOpen = false;
+		app_modals.active_modal = null;
 	}
 
 	function onBackdrop(e: MouseEvent) {
@@ -73,8 +70,19 @@
 	// Check if we're doing global search
 	const isGlobalSearch = $derived(searchQuery.trim().length > 0);
 
-	function openTemplate(t: TemplateDefinition) {
-		onSelectTemplate(t.id);
+	async function openTemplate(t: TemplateDefinition) {
+		console.log('Selected template:', t);
+		
+		// Dynamically load the component
+		const { loadTemplateComponent, active_template } = await import('$lib/store/templates.svelte');
+		try {
+			const component = await loadTemplateComponent(t);
+			// Update the active template with the loaded component
+			active_template.template = { ...t, component };
+		} catch (error) {
+			console.error('Failed to load template component:', error);
+		}
+		
 		// Close modal after a short delay
 		setTimeout(() => close(), 300);
 	}
