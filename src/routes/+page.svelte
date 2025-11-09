@@ -10,7 +10,11 @@
 
 	// Get the component and theme colors with proper types
 	let templateComponent = $derived(active_template.template?.component);
-	let themeColors = $derived(active_theme.theme?.colors || {});
+	let themeColors = $derived(active_theme.theme ?{
+		...active_theme.theme.colors,
+		...active_theme.theme.radius,
+		...active_theme.theme.misc
+	}:{});
 </script>
 
 <PreviewDeviceSelector />
