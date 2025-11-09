@@ -25,9 +25,45 @@ const rand = (min: number, max: number) => Math.random() * (max - min) + min;
 const randInt = (min: number, max: number) => Math.floor(rand(min, max + 1));
 const pick = <T>(arr: T[]): T => arr[randInt(0, arr.length - 1)];
 
+// -------------------------------
+// Quantization & Caching
+// -------------------------------
+// Quantize values to reduce variance and improve coherence
+function quantize(value: number, step: number): number {
+	return Math.round(value / step) * step;
+}
+
+// Cache for contrast calculations to avoid redundant work
+const contrastCache = new Map<string, number>();
+function getCachedContrast(fg: string, bg: string): number {
+	const key = `${fg}|${bg}`;
+	if (contrastCache.has(key)) {
+		return contrastCache.get(key)!;
+	}
+	const contrast = wcagContrast(fg, bg);
+	contrastCache.set(key, contrast);
+	return contrast;
+}
+
+// Hue relationships for intelligent color harmony
+enum HueRelation {
+	COMPLEMENTARY = 180,
+	TRIADIC_1 = 120,
+	TRIADIC_2 = 240,
+	ANALOGOUS_1 = 30,
+	ANALOGOUS_2 = -30,
+	SPLIT_COMP_1 = 150,
+	SPLIT_COMP_2 = 210
+}
+
+function getRelatedHue(baseHue: number, relation: HueRelation): number {
+	return (baseHue + relation + 360) % 360;
+}
+
 // Culori already formats OKLCH; direct formatting used where needed.
 
 // Use culori's random with constraints to create varied but balanced OKLCH colors
+// Now with quantization for more coherent themes
 function randomColor(constraints?: {
 	l?: [number, number];
 	c?: [number, number];
@@ -38,19 +74,29 @@ function randomColor(constraints?: {
 		c: constraints?.c ?? [0.05, 0.37], // Increased max chroma for more vibrancy
 		h: constraints?.h ?? [0, 360]
 	});
-	return { ...col, str: formatCss(col) };
+
+	// Quantize for consistency and coherence
+	const quantized = {
+		...col,
+		l: quantize(col.l ?? 0.5, 0.05), // Quantize lightness to 5% steps
+		c: quantize(col.c ?? 0.1, 0.02), // Quantize chroma to 2% steps
+		h: quantize(col.h ?? 0, 15) // Quantize hue to 15° steps for harmony
+	};
+
+	return { ...quantized, str: formatCss(quantized) };
 }
 
 // Optimized: Ensure a content (foreground) color has at least required contrast vs base
+// Now with caching for better performance
 function generateContentColor(bg: string, target = 7): string {
 	// Try white/black first - covers 90% of cases efficiently
 	const white = '#ffffff';
 	const black = '#000000';
 
-	const whiteContrast = wcagContrast(white, bg);
+	const whiteContrast = getCachedContrast(white, bg);
 	if (whiteContrast >= target) return white;
 
-	const blackContrast = wcagContrast(black, bg);
+	const blackContrast = getCachedContrast(black, bg);
 	if (blackContrast >= target) return black;
 
 	// Binary search approach for faster convergence
@@ -63,7 +109,7 @@ function generateContentColor(bg: string, target = 7): string {
 
 	for (const l of [...darkerSamples, ...lighterSamples]) {
 		const neutral = formatCss({ mode: 'oklch', l, c: 0, h: 0 });
-		const cr = wcagContrast(neutral, bg);
+		const cr = getCachedContrast(neutral, bg);
 		if (cr >= target) return neutral;
 		if (cr > bestCr) {
 			bestCr = cr;
@@ -75,6 +121,7 @@ function generateContentColor(bg: string, target = 7): string {
 }
 
 // Generate a coherent base palette and semantic colors
+// Now with intelligent hue correlation and quantized steps
 function generateColors(themeType: 'light' | 'dark' | 'random' = 'random'): Record<string, string> {
 	const colors: Record<string, string> = {};
 
@@ -87,14 +134,22 @@ function generateColors(themeType: 'light' | 'dark' | 'random' = 'random'): Reco
 	}
 
 	// Base neutrals: dynamically generate for dark or light themes
-	const baseHue = rand(0, 360);
-	const baseChroma = rand(0, 0.08); // Increased for more character without overwhelming
+	const baseHue = quantize(rand(0, 360), 15); // Quantize base hue to 15° steps
+	const baseChroma = quantize(rand(0, 0.08), 0.01); // Quantized chroma
 
 	// For dark themes: base-100 is darkest, for light themes: base-100 is lightest
 	// Optimized: single assignment instead of conditional
 	const [base100L, base200L, base300L] = isDark
-		? [rand(0.08, 0.16), rand(0.14, 0.22), rand(0.2, 0.3)] // Dark: tighter ranges for consistency
-		: [rand(0.94, 0.98), rand(0.87, 0.93), rand(0.8, 0.86)]; // Light: better separation
+		? [
+				quantize(rand(0.08, 0.16), 0.05),
+				quantize(rand(0.14, 0.22), 0.05),
+				quantize(rand(0.2, 0.3), 0.05)
+			] // Dark: tighter ranges for consistency
+		: [
+				quantize(rand(0.94, 0.98), 0.05),
+				quantize(rand(0.87, 0.93), 0.05),
+				quantize(rand(0.8, 0.86), 0.05)
+			]; // Light: better separation
 
 	colors['--color-base-100'] = formatCss({
 		mode: 'oklch',
@@ -120,36 +175,59 @@ function generateColors(themeType: 'light' | 'dark' | 'random' = 'random'): Reco
 	colors['--color-base-content'] = generateContentColor(colors['--color-base-200'], targetContrast);
 
 	// Primary: vibrant and saturated, adjusted for theme type
-	const primaryL = isDark ? rand(0.58, 0.72) : rand(0.45, 0.65);
-	const primary = randomColor({ c: [0.15, 0.4], l: [primaryL, primaryL + 0.08] }); // Increased chroma for vibrancy
+	const primaryHue = quantize(rand(0, 360), 15); // Quantized hue for harmony
+	const primaryL = quantize(isDark ? rand(0.58, 0.72) : rand(0.45, 0.65), 0.05);
+	const primary = randomColor({
+		h: [primaryHue, primaryHue],
+		c: [0.15, 0.4],
+		l: [primaryL, primaryL + 0.08]
+	});
 	colors['--color-primary'] = primary.str;
 	colors['--color-primary-content'] = generateContentColor(primary.str, 7);
 
-	// Secondary: complementary or analogous to primary
-	const secondaryHue = ((primary.h ?? 0) + rand(90, 150)) % 360; // Narrower range for better harmony
-	const secondaryL = isDark ? rand(0.52, 0.68) : rand(0.4, 0.6);
+	// Secondary: use intelligent hue relationship (complementary or triadic)
+	const colorScheme = pick(['complementary', 'triadic', 'split-complementary'] as const);
+	let secondaryHue: number;
+
+	switch (colorScheme) {
+		case 'complementary':
+			secondaryHue = getRelatedHue(primaryHue, HueRelation.COMPLEMENTARY);
+			break;
+		case 'triadic':
+			secondaryHue = getRelatedHue(primaryHue, HueRelation.TRIADIC_1);
+			break;
+		case 'split-complementary':
+			secondaryHue = getRelatedHue(primaryHue, HueRelation.SPLIT_COMP_1);
+			break;
+	}
+
+	const secondaryL = quantize(isDark ? rand(0.52, 0.68) : rand(0.4, 0.6), 0.05);
 	const secondary = randomColor({
 		h: [secondaryHue, secondaryHue],
-		c: [0.12, 0.35], // Increased vibrancy
+		c: [0.12, 0.35],
 		l: [secondaryL, secondaryL + 0.08]
 	});
 	colors['--color-secondary'] = secondary.str;
 	colors['--color-secondary-content'] = generateContentColor(secondary.str, 7);
 
-	// Accent: high chroma, distinct hue
-	const accentHue = ((primary.h ?? 0) + rand(-90, 90) + 360) % 360; // Tighter control for cohesion
-	const accentL = isDark ? rand(0.62, 0.78) : rand(0.5, 0.7);
+	// Accent: use another intelligent relationship
+	const accentHue =
+		colorScheme === 'triadic'
+			? getRelatedHue(primaryHue, HueRelation.TRIADIC_2)
+			: getRelatedHue(primaryHue, pick([HueRelation.ANALOGOUS_1, HueRelation.ANALOGOUS_2]));
+
+	const accentL = quantize(isDark ? rand(0.62, 0.78) : rand(0.5, 0.7), 0.05);
 	const accent = randomColor({
 		h: [accentHue, accentHue],
-		c: [0.2, 0.45], // Maximum vibrancy for accent
+		c: [0.2, 0.45],
 		l: [accentL, accentL + 0.08]
 	});
 	colors['--color-accent'] = accent.str;
 	colors['--color-accent-content'] = generateContentColor(accent.str, 7);
 
 	// Neutral: muted, mid-range
-	const neutralL = isDark ? rand(0.38, 0.52) : rand(0.35, 0.5);
-	const neutral = randomColor({ c: [0.03, 0.12], l: [neutralL, neutralL + 0.08] }); // Slightly more saturated
+	const neutralL = quantize(isDark ? rand(0.38, 0.52) : rand(0.35, 0.5), 0.05);
+	const neutral = randomColor({ c: [0.03, 0.12], l: [neutralL, neutralL + 0.08] });
 	colors['--color-neutral'] = neutral.str;
 	colors['--color-neutral-content'] = generateContentColor(neutral.str, 7);
 
@@ -166,28 +244,28 @@ function generateColors(themeType: 'light' | 'dark' | 'random' = 'random'): Reco
 		// Error: red range (350-25°) - spans 0° for true reds, vibrant
 		{
 			key: '--color-error',
-			hue: rand(0, 1) > 0.7 ? rand(350, 360) : rand(0, 25), // Favor true reds
+			hue: quantize(rand(0, 1) > 0.7 ? rand(350, 360) : rand(0, 25), 15), // Favor true reds
 			c: [0.18, 0.4], // Increased for more vibrant errors
 			l: semanticL as [number, number]
 		},
 		// Warning: amber/orange range (35-75°) - unmistakably warning
 		{
 			key: '--color-warning',
-			hue: rand(35, 75),
+			hue: quantize(rand(35, 75), 15),
 			c: [0.18, 0.4], // Increased vibrancy
 			l: isDark ? [0.68, 0.82] : [0.58, 0.78] // Brighter for visibility
 		},
 		// Success: green range (120-155°) - clearly positive, more vibrant
 		{
 			key: '--color-success',
-			hue: rand(120, 155), // Tighter green range
+			hue: quantize(rand(120, 155), 15), // Tighter green range
 			c: [0.15, 0.32], // Increased vibrancy while staying green
 			l: semanticL as [number, number]
 		},
 		// Info: blue/cyan range (195-235°) - clearly informational
 		{
 			key: '--color-info',
-			hue: rand(195, 235), // Tighter blue range
+			hue: quantize(rand(195, 235), 15), // Tighter blue range
 			c: [0.15, 0.35], // Increased vibrancy
 			l: semanticL as [number, number]
 		}
@@ -279,4 +357,9 @@ export function randomizeThemeInPlace(theme: DaisyTheme) {
 	theme.name = next.name;
 	theme.id = next.id;
 	return theme;
+}
+
+// Clear the contrast cache to prevent memory buildup
+export function clearContrastCache() {
+	contrastCache.clear();
 }

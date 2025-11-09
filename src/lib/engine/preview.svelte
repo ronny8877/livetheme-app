@@ -103,9 +103,10 @@
 html,body{scrollbar-width:none;-ms-overflow-style:none;margin:0;padding:0;}
 html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;}
 #root{width:100%;height:100%;isolation:isolate;}
-body{all:unset;display:block;}
-</style></head>
-<body><div id="root"></div></body></html>`;
+body{all:unset;display:block;width:100%;height:100%;overflow:auto; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;}
+</style>
+</head>
+<body><div class="transition-all duration-300 ease-in" id="root"></div></body></html>`;
 
 	// --- Derived State ---
 	const presets = $derived({ ...DEFAULT_DEVICE_PRESETS, ...devicePresets });
