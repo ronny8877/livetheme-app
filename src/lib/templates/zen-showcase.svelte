@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { templates_catalog, templates_ui } from '$lib/store/templates.svelte';
+	import { templates_catalog } from '$lib/store/templates.svelte';
 	import { Sparkles } from '@lucide/svelte';
 	import AnalogClock from '../components/analog-clock.svelte';
+	import { app_modals, MODAL_TYPE } from '$lib/store/app.svelte';
 
 	let now = $state(new Date());
 	let timer: ReturnType<typeof setInterval> | null = null;
@@ -261,11 +262,11 @@
 
 	// Template interaction - just open modal
 	function viewTemplate(id: string) {
-		templates_ui.is_open = true;
+		app_modals.active_modal=MODAL_TYPE.TEMPLATES
 	}
 
 	function openTemplates() {
-		templates_ui.is_open = true;
+		app_modals.active_modal = MODAL_TYPE.TEMPLATES;
 	}
 
 	// Featured templates (first 2)

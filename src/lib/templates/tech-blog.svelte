@@ -35,7 +35,7 @@
 			</div>
 
 			<!-- Desktop nav - visible on md+ -->
-			<nav class="hidden items-center gap-6 md:flex">
+			<nav class="hidden items-center gap-6 md:flex z-50">
 				<a
 					class="flex items-center gap-2 text-sm leading-normal font-medium text-base-content"
 					href="#"
@@ -145,7 +145,7 @@
 
 	<main class="mx-auto w-full max-w-7xl flex-1 px-4 py-10 sm:px-6 lg:px-8">
 		<div
-			class="relative mb-12 flex min-h-[360px] w-full flex-col items-center justify-center overflow-hidden rounded-2xl bg-primary p-6 text-center md:min-h-[480px] md:p-8"
+			class="relative mb-12 flex min-h-[360px] w-full flex-col items-center justify-center overflow-hidden rounded-box bg-primary p-6 text-center md:min-h-[480px] md:p-8"
 		>
 			<div class="absolute inset-0 z-0 h-full w-full text-primary-content">
 				<img
@@ -189,7 +189,7 @@
 						<article
 							class="flex flex-col gap-4 rounded-xl p-4 transition-shadow hover:shadow-lg md:flex-row"
 						>
-							<div class="w-full overflow-hidden rounded-xl md:w-56 md:shrink-0">
+							<div class="w-full overflow-hidden rounded-box md:w-56 md:shrink-0">
 								<img
 									alt="Post thumbnail"
 									class="h-48 w-full object-cover md:h-36"
