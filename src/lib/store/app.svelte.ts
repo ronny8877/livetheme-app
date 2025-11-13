@@ -1,8 +1,8 @@
 export enum MODAL_TYPE {
 	FONTS = 'fonts',
-	TYPOGRAPHY = 'typography',
 	TEMPLATES = 'templates',
 	GRADIENT = 'gradient',
+	VAULT = 'vault',
 	EXPLORE = 'explore',
 	SETTINGS = 'settings'
 }

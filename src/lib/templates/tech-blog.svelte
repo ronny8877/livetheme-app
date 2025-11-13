@@ -35,7 +35,7 @@
 			</div>
 
 			<!-- Desktop nav - visible on md+ -->
-			<nav class="hidden items-center gap-6 md:flex z-50">
+			<nav class="z-50 hidden items-center gap-6 md:flex">
 				<a
 					class="flex items-center gap-2 text-sm leading-normal font-medium text-base-content"
 					href="#"

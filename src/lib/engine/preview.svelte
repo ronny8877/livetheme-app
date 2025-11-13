@@ -1,4 +1,3 @@
-
 <script lang="ts">
 	import { Repeat } from '@lucide/svelte';
 	import { type SvelteComponent, type ComponentProps, mount, unmount } from 'svelte';
@@ -126,9 +125,7 @@ body{all:unset;display:block;width:100%;height:100%;overflow:auto; -webkit-font-
 
 	const frameStyle: string = $derived(
 		`width: ${effectiveWidth}px; height: ${effectiveHeight}px; max-width: 100%; max-height: 100%;` +
-			(animate
-				? ` transition: all ${animationDurationMs}ms ${animationEasing};`
-				: '')
+			(animate ? ` transition: all ${animationDurationMs}ms ${animationEasing};` : '')
 	);
 
 	const outerClasses = $derived(
@@ -396,9 +393,11 @@ body{all:unset;display:block;width:100%;height:100%;overflow:auto; -webkit-font-
 
 		const observer = new MutationObserver((mutations) => {
 			for (const mutation of mutations) {
-				if (mutation.type === 'childList' || 
-				    (mutation.target as HTMLElement).tagName === 'STYLE' || 
-				    (mutation.target as HTMLElement).tagName === 'LINK') {
+				if (
+					mutation.type === 'childList' ||
+					(mutation.target as HTMLElement).tagName === 'STYLE' ||
+					(mutation.target as HTMLElement).tagName === 'LINK'
+				) {
 					scheduleClone();
 					break;
 				}
@@ -490,7 +489,6 @@ body{all:unset;display:block;width:100%;height:100%;overflow:auto; -webkit-font-
 			resizeObserver.disconnect();
 		};
 	});
-
 </script>
 
 <div class={outerClasses} bind:this={outerRefEl}>

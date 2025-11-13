@@ -262,7 +262,7 @@
 
 	// Template interaction - just open modal
 	function viewTemplate(id: string) {
-		app_modals.active_modal=MODAL_TYPE.TEMPLATES
+		app_modals.active_modal = MODAL_TYPE.TEMPLATES;
 	}
 
 	function openTemplates() {

@@ -4,7 +4,6 @@
 	import TemplateCard from './template-card.svelte';
 	import { app_modals } from '$lib/store/app.svelte';
 
-	
 	let dialogEl: HTMLDialogElement | null = $state(null);
 	let searchQuery = $state('');
 	let selectedCategoryIndex = $state(0);
@@ -72,7 +71,7 @@
 
 	async function openTemplate(t: TemplateDefinition) {
 		console.log('Selected template:', t);
-		
+
 		// Dynamically load the component
 		const { loadTemplateComponent, active_template } = await import('$lib/store/templates.svelte');
 		try {
@@ -82,7 +81,7 @@
 		} catch (error) {
 			console.error('Failed to load template component:', error);
 		}
-		
+
 		// Close modal after a short delay
 		setTimeout(() => close(), 300);
 	}
