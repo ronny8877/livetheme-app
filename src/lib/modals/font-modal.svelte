@@ -1,20 +1,30 @@
 <script lang="ts">
 	import { app_modals } from '$lib/store/app.svelte';
-	import { ChevronLeftIcon, ChevronRightIcon, Lock, RefreshCwIcon, XIcon, Bold, Italic, Check, Heart } from '@lucide/svelte';
+	import {
+		ChevronLeftIcon,
+		ChevronRightIcon,
+		Lock,
+		RefreshCwIcon,
+		XIcon,
+		Bold,
+		Italic,
+		Check,
+		Heart
+	} from '@lucide/svelte';
 
 	let modal: HTMLDialogElement | null = null;
 	let activeTab = $state<'discover' | 'info'>('discover');
-	let textareaElements: Record<string, HTMLTextAreaElement | null> = $state({
+	let sampleTexts = $state<Record<string, string>>({
+		Heading: 'Font pairing made simple',
+		Subheading: 'Generate font combinations with deep learning',
+		Body: 'Click (Generate) to create a new font pairing, (Lock) to lock fonts that you want to keep, and (Edit) to choose a font manually. The text is editable, try replacing it with your company name or other copy.\n\nThe goal of font pairing is to select fonts that share an overarching theme yet have a pleasing contrast. Which fonts work together is largely a matter of intuition, but we approach this problem with a neural net. See Github for more technical details.',
+		Monospace: 'const liveTheme = {};'
+	});
+	let editableElements: Record<string, HTMLDivElement | null> = $state({
 		Heading: null,
 		Subheading: null,
 		Body: null,
 		Monospace: null
-	});
-	let sampleTexts = $state<Record<string, string>>({
-		Heading: 'LiveTheme',
-		Subheading: 'Discover beautiful typography with ease',
-		Body: 'Welcome to LiveTheme, your ultimate design companion. Create stunning interfaces with our comprehensive font management system.',
-		Monospace: 'const liveTheme = {};'
 	});
 	let fontStyles = $state<Record<string, { bold: boolean; italic: boolean }>>({
 		Heading: { bold: false, italic: false },
@@ -54,9 +64,8 @@
 		activeTab = tab;
 	};
 
-	const autoExpandTextarea = (textarea: HTMLTextAreaElement) => {
-		textarea.style.height = 'auto';
-		textarea.style.height = textarea.scrollHeight + 'px';
+	const handleEditableInput = (type: string, element: HTMLDivElement) => {
+		sampleTexts[type] = element.textContent || '';
 	};
 
 	const toggleBold = (type: string) => {
@@ -82,14 +91,14 @@
 </script>
 
 {#snippet closeButton()}
-	<button class="btn absolute top-2 right-2 btn-circle btn-ghost btn-sm" onclick={closeModal}>
+	<button class="btn absolute top-3 right-5 btn-circle btn-ghost btn-sm" onclick={closeModal}>
 		<XIcon />
 	</button>
 {/snippet}
 
 {#snippet discoverControls()}
 	<div
-		class="absolute bottom-5 right-5 z-20 flex flex-col items-center justify-center gap-2 space-x-4 md:flex-row pointer-events-auto"
+		class="pointer-events-auto absolute right-5 bottom-5 z-20 flex flex-col items-center justify-center gap-2 space-x-4 md:flex-row"
 	>
 		<div class="flex items-center justify-center gap-1">
 			<button class="btn btn-circle btn-ghost btn-sm"> <ChevronLeftIcon /> </button>
@@ -101,35 +110,29 @@
 	</div>
 {/snippet}
 
-{#snippet discover({
-	type,
-	size = 'text-5xl'
-}:{
-	type: string;
-	size?: string;
-})}
-	<div class="mt-5 grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-5">
-		<div class="md:col-span-2 col-span-1 flex items-center justify-start">
-			<div class="flex flex-col items-center justify-center gap-3 w-full">
-				<div class="flex items-center justify-center gap-2 flex-wrap">
+{#snippet discover({ type, size = 'text-5xl' }: { type: string; size?: string })}
+	<div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-12 md:gap-5">
+		<div class="col-span-1 flex items-center justify-start md:col-span-2">
+			<div class="flex w-full flex-col items-center justify-center gap-3">
+				<div class="flex flex-wrap items-center justify-center gap-2">
 					<button class="btn btn-circle btn-ghost btn-md" title="Lock font">
 						<Lock size={16} />
 					</button>
-					<button 
-						class={`btn btn-circle btn-md transition-colors ${likedFonts[type] ? 'btn-error' : 'btn-ghost'}`}
+					<button
+						class={`btn btn-circle transition-colors btn-md ${likedFonts[type] ? 'btn-error' : 'btn-ghost'}`}
 						onclick={() => toggleLike(type)}
 						title="Like this font"
 					>
 						<Heart size={16} fill={likedFonts[type] ? 'currentColor' : 'none'} />
 					</button>
-					<button 
+					<button
 						class={`btn btn-circle btn-sm ${fontStyles[type].bold ? 'btn-active' : 'btn-ghost'}`}
 						onclick={() => toggleBold(type)}
 						title="Toggle Bold"
 					>
 						<Bold size={16} />
 					</button>
-					<button 
+					<button
 						class={`btn btn-circle btn-sm ${fontStyles[type].italic ? 'btn-active' : 'btn-ghost'}`}
 						onclick={() => toggleItalic(type)}
 						title="Toggle Italic"
@@ -139,20 +142,17 @@
 				</div>
 			</div>
 		</div>
-		<div class="md:col-span-10 col-span-1 flex flex-col items-center justify-start w-full gap-3">
-			<textarea 
-				class={`font-${type.toLowerCase()} ${size} block focus:outline-0 h-20 focus:ring-0 outline-none border-none resize-none w-full max-w-5xl ${fontStyles[type].bold ? 'font-bold' : ''} ${fontStyles[type].italic ? 'italic' : ''}`}
-				bind:value={sampleTexts[type]}
-				oninput={(e) => {
-					if (e.currentTarget) {
-						autoExpandTextarea(e.currentTarget);
-					}
-				}}
-				bind:this={textareaElements[type]}
-			>{sampleTexts[type]}</textarea>
-			<div class="relative w-full flex justify-center">
-				<button 
-					class="btn btn-primary btn-sm"
+		<div class="relative col-span-1 flex w-full items-center gap-3 md:col-span-10">
+			<div
+				id={`editable-${type.toLowerCase()}`}
+				class={`font-${type.toLowerCase()} ${size} block min-h-16 w-full max-w-2xl resize-none rounded border-none px-4 py-2 whitespace-pre-wrap outline-none focus:ring-2 focus:ring-primary focus:outline-0 ${fontStyles[type].bold ? 'font-bold' : ''} ${fontStyles[type].italic ? 'italic' : ''}`}
+				contenteditable="true"
+			>
+				{sampleTexts[type]}
+			</div>
+			<div class="absolute top-1/2 right-0 flex -translate-y-1/2 transform justify-center">
+				<button
+					class="btn btn-sm btn-primary"
 					onclick={(e) => {
 						const button = e.currentTarget;
 						const menu = button.nextElementSibling as HTMLElement;
@@ -162,21 +162,23 @@
 				>
 					Apply <Check size={16} />
 				</button>
-				<div class="hidden absolute top-full mt-2 bg-base-100 border border-base-300 rounded-lg shadow-lg z-30 whitespace-nowrap">
+				<div
+					class="absolute top-full z-30 mt-2 hidden rounded-lg border border-base-300 bg-base-100 whitespace-nowrap shadow-lg"
+				>
 					<button
-						class="block w-full text-left px-4 py-2 hover:bg-base-200 rounded-t-lg text-sm"
+						class="block w-full rounded-t-lg px-4 py-2 text-left text-sm hover:bg-base-200"
 						onclick={() => applyFontTo(type, 'Heading')}
 					>
 						Apply to Heading
 					</button>
 					<button
-						class="block w-full text-left px-4 py-2 hover:bg-base-200 text-sm"
+						class="block w-full px-4 py-2 text-left text-sm hover:bg-base-200"
 						onclick={() => applyFontTo(type, 'Subheading')}
 					>
 						Apply to Subheading
 					</button>
 					<button
-						class="block w-full text-left px-4 py-2 hover:bg-base-200 rounded-b-lg text-sm"
+						class="block w-full rounded-b-lg px-4 py-2 text-left text-sm hover:bg-base-200"
 						onclick={() => applyFontTo(type, 'Body')}
 					>
 						Apply to Body
@@ -193,57 +195,70 @@
 	bind:this={modal}
 	onmousedown={handleBackdropClick}
 >
-	<div class="modal-box h-[calc(100vh-10rem)] w-full max-w-7xl overflow-y-auto p-4 md:p-6 rounded-2xl md:rounded-3xl relative">
-		{@render closeButton()}
+	<div class="relative w-full max-w-7xl">
 		{#if activeTab === 'discover'}
 			{@render discoverControls()}
 		{/if}
+		<div
+			class="relative modal-box h-[calc(100vh-10rem)] w-full max-w-7xl overflow-y-auto rounded-2xl p-4 md:rounded-3xl md:p-6"
+		>
+			{@render closeButton()}
 
-		<div role="tablist" class="tabs-border tabs tabs-lg tracking-wide overflow-x-auto">
-			<button
-				role="tab"
-				tabindex="0"
-				onclick={() => switchTab('discover')}
-				onkeydown={(e) => {
-					if (e.key === 'Enter' || e.key === ' ') {
-						switchTab('discover');
-					}
-				}}
-				class={activeTab === 'discover' ? 'tab-active tab text-sm md:text-base' : 'tab text-sm md:text-base'}
-				aria-selected={activeTab === 'discover'}
-			>
-				Discover
-			</button>
-			<button
-				role="tab"
-				tabindex="0"
-				onclick={() => switchTab('info')}
-				onkeydown={(e) => {
-					if (e.key === 'Enter' || e.key === ' ') {
-						switchTab('info');
-					}
-				}}
-				class={activeTab === 'info' ? 'tab-active tab text-sm md:text-base' : 'tab text-sm md:text-base'}
-				aria-selected={activeTab === 'info'}
-			>
-				Info
-			</button>
+			<div role="tablist" class="tabs-border tabs overflow-x-auto tabs-lg tracking-wide">
+				<button
+					role="tab"
+					tabindex="0"
+					onclick={() => switchTab('discover')}
+					onkeydown={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							switchTab('discover');
+						}
+					}}
+					class={activeTab === 'discover'
+						? 'tab-active tab text-sm md:text-base'
+						: 'tab text-sm md:text-base'}
+					aria-selected={activeTab === 'discover'}
+				>
+					Discover
+				</button>
+				<button
+					role="tab"
+					tabindex="0"
+					onclick={() => switchTab('info')}
+					onkeydown={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							switchTab('info');
+						}
+					}}
+					class={activeTab === 'info'
+						? 'tab-active tab text-sm md:text-base'
+						: 'tab text-sm md:text-base'}
+					aria-selected={activeTab === 'info'}
+				>
+					Info
+				</button>
+			</div>
+			<div class="relative rounded-2xl p-3 md:rounded-3xl md:p-5">
+				{#if activeTab === 'discover'}
+					{#each fontType as type}
+						{@render discover({
+							type,
+							size:
+								type === 'Heading'
+									? 'text-3xl md:text-5xl'
+									: type === 'Subheading'
+										? 'text-2xl md:text-3xl'
+										: 'text-lg md:text-xl'
+						})}
+					{/each}
+				{:else if activeTab === 'info'}
+					<div class="prose prose-sm mt-4 max-w-none md:prose">
+						<h2>Font Modal Info</h2>
+						<p>This is the info tab of the Font Modal.</p>
+					</div>
+				{/if}
+			</div>
+			<!-- END -->
 		</div>
-		<div class="relative rounded-2xl md:rounded-3xl p-3 md:p-5">
-			{#if activeTab === 'discover'}
-				{#each fontType as type}
-					{@render discover({
-						type,
-						size: type === 'Heading' ? 'text-3xl md:text-5xl' : type === 'Subheading' ? 'text-2xl md:text-3xl' : 'text-lg md:text-xl'
-					})}
-				{/each}
-			{:else if activeTab === 'info'}
-				<div class="prose prose-sm md:prose mt-4 max-w-none">
-					<h2>Font Modal Info</h2>
-					<p>This is the info tab of the Font Modal.</p>
-				</div>
-			{/if}
-		</div>
-		<!-- END -->
 	</div>
 </dialog>
